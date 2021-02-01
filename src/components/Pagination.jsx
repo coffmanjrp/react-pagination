@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-const Pagination = () => {
-  const [lists, setLists] = useState([]);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
-
+const Pagination = ({
+  lists,
+  currentPage,
+  setCurrentPage,
+  itemsPerPage,
+  setItemsPerPage,
+}) => {
   const [pageNumberLimit, setPageNumberLimit] = useState(5);
   const [minPageNumberLimit, setMinPageNumberLimit] = useState(0);
   const [maxPageNumberLimit, setMaxPageNumberLimit] = useState(5);
-
-  const handleClick = (e) => {
-    setCurrentPage(+e.target.id);
-  };
 
   const pages = [];
 
@@ -20,23 +17,9 @@ const Pagination = () => {
     pages.push(i);
   }
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFistItem = indexOfLastItem - itemsPerPage;
-  const currentItems = lists.slice(indexOfFistItem, indexOfLastItem);
-
-  useEffect(() => {
-    try {
-      (async () => {
-        const res = await fetch('https://jsonplaceholder.typicode.com/todos/');
-        const data = await res.json();
-
-        setLists(data);
-      })();
-    } catch (error) {
-      throw new Error(error);
-    }
-    // eslint-disable-next-line
-  }, []);
+  const handleClick = (e) => {
+    setCurrentPage(+e.target.id);
+  };
 
   const handleNextButton = () => {
     setCurrentPage(currentPage + 1);
@@ -56,30 +39,12 @@ const Pagination = () => {
     }
   };
 
-  let pageIncrementButton = null;
-  if (pages.length > maxPageNumberLimit) {
-    pageIncrementButton = <li onClick={handleNextButton}> &hellip; </li>;
-  }
-
-  let pageDecrementButton = null;
-  if (minPageNumberLimit >= 1) {
-    pageDecrementButton = <li onClick={handlePrevButton}> &hellip; </li>;
-  }
-
   const handleLoadMore = () => {
     setItemsPerPage(itemsPerPage + 5);
   };
 
   return (
     <>
-      <h1 className="header-title">React Pagination</h1>
-      <ul>
-        {currentItems.map((item, index) => (
-          <li key={item.id}>
-            {item.id}. {item.title}
-          </li>
-        ))}
-      </ul>
       <ul className="page-numbers">
         {currentPage !== 1 && (
           <li>
@@ -88,7 +53,9 @@ const Pagination = () => {
             </button>
           </li>
         )}
-        {pageDecrementButton}
+        {minPageNumberLimit >= 1 && (
+          <li onClick={handlePrevButton}> &hellip; </li>
+        )}
         {pages.map((number) => {
           if (number > minPageNumberLimit && number <= maxPageNumberLimit) {
             return (
@@ -105,7 +72,9 @@ const Pagination = () => {
 
           return false;
         })}
-        {pageIncrementButton}
+        {pages.length > maxPageNumberLimit && (
+          <li onClick={handleNextButton}> &hellip; </li>
+        )}
         {currentPage !== pages.length && (
           <li>
             <button className="btn" onClick={handleNextButton}>
@@ -114,7 +83,6 @@ const Pagination = () => {
           </li>
         )}
       </ul>
-
       <button className="loadmore-btn btn" onClick={handleLoadMore}>
         Load More
       </button>

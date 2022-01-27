@@ -2,8 +2,6 @@
 
 A react pagination function.
 
-[DEMO](https://react-pagenation-hook.vercel.app/)
-
 ![React Pagenation](https://res.cloudinary.com/coffmanjrp-dev/image/upload/v1643245321/coffmanjrp.io/react_pagenation_hook_10ff21c283.png)
 
 ## How to start
